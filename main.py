@@ -1,10 +1,22 @@
 class Piso:
-    def __init__(self, nombre, filas, columnas,  slip, flip):
+    def __init__(self, nombre, filas, columnas,  slip, flip, patrones):
         self.nombre = nombre
         self.filas = filas
         self.columnas = columnas
         self.flip = flip
         self.slip = slip
+        self.siguiente = None
+        self.patrones = patrones
+
+class Patrones:
+    def __init__(self, codigo, colores):
+        self.codigo = codigo
+        self.colores = colores
+        self.siguiente = None
+
+class Azulejo:
+    def __init__(self, color):
+        self.color = color
         self.siguiente = None
 
 class ListaEnlazada_Pisos:
@@ -14,18 +26,62 @@ class ListaEnlazada_Pisos:
     def esta_vacia(self):
         return self.primero is None
     
-    def add(self, nombre, filas, columnas, slip, flip):
-        nuevo_nodo = Piso(nombre,filas, columnas, slip, flip)
-        if self.esta_vacia():
-            self.primero = nuevo_nodo
-        else:
-            self.primero.siguiente = nuevo_nodo
+    def add(self, nombre, filas, columnas, slip, flip, patrones):
+        nuevo_nodo = Piso(nombre,filas, columnas, slip, flip, patrones)
+        nuevo_nodo.siguiente = self.primero
+        self.primero = nuevo_nodo
 
     def get(self):
         if not self.esta_vacia():
-            return self.primero.filas
+            piso_actual = self.primero
+            while piso_actual is not None:
+                print(piso_actual.patrones.get())
+                piso_actual = piso_actual.siguiente
         else:
-            print("la cola está vacia")
+            print("La lista está vacia")
+
+class ListaEnlazada_Patrones:
+    def __init__(self):
+        self.primero = None
+
+    def esta_vacia(self):
+        return self.primero is None
+    
+    def add(self, codigo, colores):
+        nuevo_nodo = Patrones(codigo, colores)
+        nuevo_nodo.siguiente = self.primero
+        self.primero = nuevo_nodo
+            
+    def get(self):
+        if not self.esta_vacia():
+            patron_actual = self.primero
+            while patron_actual is not None:
+                print(patron_actual.colores)
+                patron_actual = patron_actual.siguiente
+        else:
+            print("La lista está vacia")
+
+
+class ListaEnlazada_Azulejos:
+    def __init__(self):
+        self.primero = None
+
+    def esta_vacia(self):
+        return self.primero is None
+    
+    def add(self, color):
+        nuevo_nodo = Azulejo(color)
+        nuevo_nodo.siguiente = self.primero
+        self.primero = nuevo_nodo
+            
+    def get(self):
+        if not self.esta_vacia():
+            azulejo_actual = self.primero
+            while azulejo_actual is not None:
+                print(azulejo_actual.color)
+                azulejo_actual = azulejo_actual.siguiente
+        else:
+            print("La lista está vacia")
 
 
 def save_data(raiz):
@@ -41,10 +97,18 @@ def save_data(raiz):
         costo_slip = tag_Costo_flip.text.strip()
         patrones = hoja.find("patrones")
         Pisos_disponibles = ListaEnlazada_Pisos()
-        Pisos_disponibles.add(nombre_piso, columnas, Filas, costo_slip, costo_flip)
+        patrones_piso = ListaEnlazada_Patrones()
+        azulejos_piso = ListaEnlazada_Azulejos()
         for patron in patrones:
-            pass
-    print(Pisos_disponibles.get())
+            codigo = patron.get("codigo")
+            azulejos = patron.text.strip()
+            for azulejo in azulejos:
+                nuevo_azulejo = azulejo
+                azulejos_piso.add(nuevo_azulejo)
+            patrones_piso.add(codigo, azulejos_piso)
+            azulejos_piso.get()
+        Pisos_disponibles.add(nombre_piso, columnas, Filas, costo_slip, costo_flip, patrones_piso)
+        
 import xml.etree.ElementTree as ET
 import os
 print("-----------Bienvenido-----------")

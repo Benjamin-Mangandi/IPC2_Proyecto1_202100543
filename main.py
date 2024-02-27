@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import os
-
+import reportes as report
 
 class Piso:
     def __init__(self, nombre, filas, columnas,  slip, flip, patrones):
@@ -13,9 +13,9 @@ class Piso:
         self.siguiente = None
 
 class Patrones:
-    def __init__(self, codigo, colores):
+    def __init__(self, codigo, azulejos):
         self.codigo = codigo
-        self.colores = colores
+        self.azulejos = azulejos
         self.siguiente = None
 
 class Azulejo:
@@ -39,13 +39,12 @@ class ListaEnlazada_Pisos:
             self.ultimo.siguiente = nuevo_nodo
             self.ultimo = nuevo_nodo
             
-            
-
     def get(self):
         if not self.esta_vacia():
             piso_actual = self.primero
             while piso_actual is not None:
-                print(piso_actual.nombre)
+                print("\nNombre: "+piso_actual.nombre)
+                piso_actual.patrones.get()
                 piso_actual = piso_actual.siguiente
         else:
             print("La lista está vacia")
@@ -58,7 +57,6 @@ class ListaEnlazada_Pisos:
                     return piso_actual
                 else:
                     piso_actual = piso_actual.siguiente
-
         else:
             print("La lista está vacia")
 
@@ -71,8 +69,8 @@ class ListaEnlazada_Patrones:
     def esta_vacia(self):
         return self.primero is None
     
-    def add(self, codigo, colores):
-        nuevo_nodo = Patrones(codigo, colores)
+    def add(self, codigo, azulejos):
+        nuevo_nodo = Patrones(codigo, azulejos)
         if self.esta_vacia():
             self.primero = self.ultimo = nuevo_nodo
         else:
@@ -83,7 +81,7 @@ class ListaEnlazada_Patrones:
         if not self.esta_vacia():
             patron_actual = self.primero
             while patron_actual is not None:
-                print(patron_actual.codigo)
+                print("codigo patron: "+patron_actual.codigo)
                 patron_actual = patron_actual.siguiente
         else:
             print("La lista está vacia")
@@ -93,7 +91,7 @@ class ListaEnlazada_Patrones:
             patron_actual = self.primero
             while patron_actual is not None:
                 if patron_actual.codigo == codigo:
-                    return patron_actual.codigo
+                    return patron_actual
                 else:
                     patron_actual = patron_actual.siguiente
         else:
@@ -116,14 +114,18 @@ class ListaEnlazada_Azulejos:
             self.ultimo.siguiente = nuevo_nodo
             self.ultimo = nuevo_nodo
             
-    def get(self):
+    def get(self, indice):
         if not self.esta_vacia():
             azulejo_actual = self.primero
+            conteo = 0
             while azulejo_actual is not None:
-                print(azulejo_actual.color)
-                azulejo_actual = azulejo_actual.siguiente
+                if indice == conteo:
+                    return azulejo_actual.color
+                conteo+=1
+                azulejo_actual=azulejo_actual.siguiente
         else:
             print("La lista está vacia")
+
 
 
 def save_data(raiz):
@@ -131,9 +133,9 @@ def save_data(raiz):
     Pisos_cargados = ListaEnlazada_Pisos()
     for hoja in raiz:  
         nombre_piso = hoja.get("nombres")
-        tag_columnas = hoja.find("R")
+        tag_columnas = hoja.find("C")
         columnas = tag_columnas.text.strip()
-        tag_Filas = hoja.find("C")
+        tag_Filas = hoja.find("R")
         Filas = tag_Filas.text.strip()
         Costo_change = hoja.find("F")
         costo_flip = Costo_change.text.strip()
@@ -141,15 +143,15 @@ def save_data(raiz):
         costo_slip = tag_Costo_flip.text.strip()
         patrones = hoja.find("patrones")
         patrones_piso = ListaEnlazada_Patrones()
-        azulejos_piso = ListaEnlazada_Azulejos()
         for patron in patrones:
+            azulejos_piso = ListaEnlazada_Azulejos()
             codigo = patron.get("codigo")
             azulejos = patron.text.strip()
             for azulejo in azulejos:
                 nuevo_azulejo = azulejo
                 azulejos_piso.add(nuevo_azulejo)
             patrones_piso.add(codigo, azulejos_piso)
-        Pisos_cargados.add(nombre_piso, columnas, Filas, costo_slip, costo_flip, patrones_piso)
+        Pisos_cargados.add(nombre_piso, Filas, columnas, costo_slip, costo_flip, patrones_piso)
     print("\nArchivo Cargado Con exito.\n")
         
 
@@ -170,21 +172,21 @@ while respuesta != str(2):
             tree = ET.parse(ruta_xml)
             raiz = tree.getroot()
             save_data(raiz)
-            while respuesta != str(4):
-                print("Por favor seleccione una opción")
+            while respuesta != str(3):
+                print("\nPor favor seleccione una opción")
                 print("1. Seleccionar Piso")
                 print("2. Mostrar Todos los pisos")
-                print("4. Salir")
+                print("3. Salir")
                 respuesta = input("Opción: ")
                 if respuesta == str(1):
                     piso_deseado = input("\nSeleccione un piso por medio del nombre: ")
                     piso_disponible = Pisos_cargados.disponibilidad(piso_deseado)
                     if piso_disponible is not None:
-                        print("¡Piso Encontrado con exito!")
+                        print("\n¡Piso Encontrado con exito!")
                         patron_deseado = input("\nSeleccione un patron por medio de su codigo: ")
                         patron_disponible = piso_disponible.patrones.disponibilidad(patron_deseado)
                         if patron_disponible is not None:
-                            print("\n¡Patron Encontrado con exito!\n")
+                            print("\n¡Patron Encontrado con exito!")
                             while respuesta != str(4):
                                 print("\nSeleccione una opción para el patron:")
                                 print("1. Mostrar graficamente")
@@ -192,7 +194,7 @@ while respuesta != str(2):
                                 print("4. Salir")
                                 respuesta = input("Opción: ")
                                 if respuesta == str(1):
-                                    pass
+                                    report.crear_piso(piso_disponible, patron_disponible)
                                 if respuesta == str(2):
                                     pass
                                 if respuesta == str(4):
@@ -201,8 +203,10 @@ while respuesta != str(2):
                             print("patron no encontrado, intentelo de nuevo.")
                     else:
                         print("No fue posible encontrar el piso, Intentelo de nuevo.\n")
-            break
+            #break
+                if respuesta == str(2):
+                    Pisos_cargados.get()
         else:
-            print(f"El archivo {nombre_archivo} no existe en el escritorio.")
+            print(f"\nEl archivo {nombre_archivo} no existe en el escritorio.\n")
 print("Gracias por usar nuestra aplicación")
 print("Saliendo...")

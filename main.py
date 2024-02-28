@@ -126,6 +126,51 @@ class ListaEnlazada_Azulejos:
         else:
             print("La lista está vacia")
 
+    def movement(self, patron_objetivo,filas, columnas):
+        if not self.esta_vacia():
+            objetivo_azulejo_actual = patron_objetivo.primero
+            azulejo_actual = self.primero
+            indice = 0
+            while azulejo_actual is not None and objetivo_azulejo_actual is not None:
+                if azulejo_actual.color == objetivo_azulejo_actual.color:
+                    azulejo_actual= azulejo_actual.siguiente
+                    objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                    indice+=1
+                elif azulejo_actual.color != objetivo_azulejo_actual.color:
+                    if (indice+1) % (int(columnas)) == 0:
+                        if azulejo_actual.color != objetivo_azulejo_actual.color:
+                            print("Volteo")
+                            azulejo_actual= azulejo_actual.siguiente
+                            objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                            indice+=1
+                            if indice == int(filas)*int(columnas):
+                                return
+                        else:
+                            azulejo_actual= azulejo_actual.siguiente
+                            objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                            indice+=1
+                            if indice == int(filas)*int(columnas):
+                                return
+                    if azulejo_actual.siguiente.color == objetivo_azulejo_actual.color:
+                        print("Intercambio por la derecha")
+                        azulejo_actual= azulejo_actual.siguiente
+                        objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                        indice+=1
+                    elif self.get(indice+int(columnas)) == objetivo_azulejo_actual.color:
+                        print("Intercambio por la parte inferior")
+                        azulejo_actual= azulejo_actual.siguiente
+                        objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                        indice+=1
+                    elif self.get(indice-int(columnas)) == objetivo_azulejo_actual.color:
+                        print("Intercambio por la parte superior")
+                        azulejo_actual= azulejo_actual.siguiente
+                        objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                        indice+=1
+                    else:
+                        print("Volteo")
+                        azulejo_actual= azulejo_actual.siguiente
+                        objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                        indice+=1
 
 
 def save_data(raiz):
@@ -196,7 +241,15 @@ while respuesta != str(2):
                                 if respuesta == str(1):
                                     report.crear_piso(piso_disponible, patron_disponible)
                                 if respuesta == str(2):
-                                    pass
+                                    patron_deseado_convertir = input("\nSeleccione el otro patron por medio de su codigo: ")
+                                    if patron_deseado != patron_deseado_convertir:
+                                        patron_a_convertir = piso_disponible.patrones.disponibilidad(patron_deseado_convertir)
+                                        if patron_a_convertir is not None:
+                                            patron_disponible.azulejos.movement(patron_a_convertir.azulejos,piso_disponible.filas, piso_disponible.columnas )
+                                        else:
+                                            print("\nPatron no encontrado, intentelo nuevamente.")
+                                    else:
+                                        print("\nEl patron a convertir no puede ser el mismo. Intente con otro codigo.")
                                 if respuesta == str(4):
                                     pass
                         else:

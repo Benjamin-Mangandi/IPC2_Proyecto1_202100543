@@ -126,10 +126,25 @@ class ListaEnlazada_Azulejos:
         else:
             print("La lista está vacia")
 
-    def movement(self, patron_objetivo,filas, columnas):
+    def modificar(self, indice, nuevo_color):
+        actual = self.primero
+        contador = 0
+        while actual is not None:
+            if contador == indice:
+                actual.color = nuevo_color
+                return
+            actual = actual.siguiente
+            contador += 1
+        return  # No se encontró la posición
+
+    def movement_str(self,patron_objetivo,filas, columnas):
         if not self.esta_vacia():
+            num_paso = 0
+            aux_patron = self
             objetivo_azulejo_actual = patron_objetivo.primero
-            azulejo_actual = self.primero
+            azulejo_actual = aux_patron.primero
+            aux_patron.imprimir(filas, columnas)
+            print("\n")
             indice = 0
             while azulejo_actual is not None and objetivo_azulejo_actual is not None:
                 if azulejo_actual.color == objetivo_azulejo_actual.color:
@@ -138,39 +153,96 @@ class ListaEnlazada_Azulejos:
                     indice+=1
                 elif azulejo_actual.color != objetivo_azulejo_actual.color:
                     if (indice+1) % (int(columnas)) == 0:
-                        if azulejo_actual.color != objetivo_azulejo_actual.color:
-                            print("Volteo")
-                            azulejo_actual= azulejo_actual.siguiente
-                            objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
-                            indice+=1
-                            if indice == int(filas)*int(columnas):
-                                return
-                        else:
-                            azulejo_actual= azulejo_actual.siguiente
-                            objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
-                            indice+=1
-                            if indice == int(filas)*int(columnas):
-                                return
-                    if azulejo_actual.siguiente.color == objetivo_azulejo_actual.color:
-                        print("Intercambio por la derecha")
+                            if self.get(indice+int(columnas)) == objetivo_azulejo_actual.color and patron_objetivo.get(indice+int(columnas)) == azulejo_actual.color:
+                                num_paso+=1
+                                aux_patron.modificar(indice, objetivo_azulejo_actual.color)
+                                aux_patron.modificar(indice+int(columnas), patron_objetivo.get(indice+int(columnas)))
+                                print(f"Paso {num_paso},Intercambio por la parte inferior")
+                                aux_patron.imprimir(filas, columnas)
+                                azulejo_actual= azulejo_actual.siguiente
+                                objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                                indice+=1
+                                if indice == int(filas)*int(columnas):
+                                    return
+                            elif self.get(indice-int(columnas)) == objetivo_azulejo_actual.color and patron_objetivo.get(indice-int(columnas)) == azulejo_actual.color:
+                                num_paso+=1
+                                aux_patron.modificar(indice, objetivo_azulejo_actual.color)
+                                aux_patron.modificar(indice-int(columnas), patron_objetivo.get(indice-int(columnas)))
+                                print(f"Paso {num_paso},Intercambio por la parte superior")
+                                aux_patron.imprimir(filas, columnas)
+                                azulejo_actual= azulejo_actual.siguiente
+                                objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                                indice+=1
+                                if indice == int(filas)*int(columnas):
+                                    return
+                            else:
+                                num_paso+=1
+                                if azulejo_actual.color == "B":
+                                    aux_patron.modificar(indice, "N")
+                                elif azulejo_actual.color == "N":
+                                    aux_patron.modificar(indice, "B")
+                                print(f"Paso {num_paso}, Volteo")
+                                aux_patron.imprimir(filas, columnas)
+                                azulejo_actual= azulejo_actual.siguiente
+                                objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                                indice+=1
+                                if indice == int(filas)*int(columnas):
+                                    return
+                    elif azulejo_actual.siguiente.color == objetivo_azulejo_actual.color and azulejo_actual.color == objetivo_azulejo_actual.siguiente.color:
+                        num_paso+=1
+                        aux_patron.modificar(indice, objetivo_azulejo_actual.color)
+                        aux_patron.modificar(indice+1, azulejo_actual.siguiente.color)
+                        print(f"Paso {num_paso}, Intercambio por la derecha")
+                        aux_patron.imprimir(filas, columnas)
                         azulejo_actual= azulejo_actual.siguiente
                         objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
                         indice+=1
-                    elif self.get(indice+int(columnas)) == objetivo_azulejo_actual.color:
-                        print("Intercambio por la parte inferior")
+                    elif self.get(indice+int(columnas)) == objetivo_azulejo_actual.color and patron_objetivo.get(indice+int(columnas)) == azulejo_actual.color:
+                        num_paso+=1
+                        aux_patron.modificar(indice, objetivo_azulejo_actual.color)
+                        aux_patron.modificar(indice+int(columnas), patron_objetivo.get(indice+int(columnas)))
+                        print(f"Paso {num_paso},Intercambio por la parte inferior")
+                        aux_patron.imprimir(filas, columnas)
                         azulejo_actual= azulejo_actual.siguiente
                         objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
                         indice+=1
-                    elif self.get(indice-int(columnas)) == objetivo_azulejo_actual.color:
-                        print("Intercambio por la parte superior")
+                    elif self.get(indice-int(columnas)) == objetivo_azulejo_actual.color and patron_objetivo.get(indice-int(columnas)) == azulejo_actual.color:
+                        num_paso+=1
+                        aux_patron.modificar(indice, objetivo_azulejo_actual.color)
+                        aux_patron.modificar(indice-int(columnas), patron_objetivo.get(indice-int(columnas)))
+                        print(f"Paso {num_paso},Intercambio por la parte superior")
+                        aux_patron.imprimir(filas, columnas)
+                        azulejo_actual= azulejo_actual.siguiente
+                        objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
+                        indice+=1
+                    elif azulejo_actual.color != objetivo_azulejo_actual.color:
+                        num_paso+=1
+                        if azulejo_actual.color == "B":
+                            aux_patron.modificar(indice, "N")
+                        elif azulejo_actual.color == "N":
+                            aux_patron.modificar(indice, "B")
+                        print(f"Paso {num_paso}, Volteo")
+                        aux_patron.imprimir(filas, columnas)
                         azulejo_actual= azulejo_actual.siguiente
                         objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
                         indice+=1
                     else:
-                        print("Volteo")
                         azulejo_actual= azulejo_actual.siguiente
                         objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
                         indice+=1
+                        
+
+    def imprimir(self, filas, columnas):
+        actual = self.primero
+        for f in range(filas):
+            for c in range(columnas):
+                if actual:
+                    print(f"[{actual.color}]", end=" ")
+                    actual = actual.siguiente
+                else:
+                    print("[ ]", end=" ")  # Espacio para azulejos
+            print()  # Nueva línea después de cada fila
+        print("\n")
 
 
 def save_data(raiz):
@@ -196,7 +268,7 @@ def save_data(raiz):
                 nuevo_azulejo = azulejo
                 azulejos_piso.add(nuevo_azulejo)
             patrones_piso.add(codigo, azulejos_piso)
-        Pisos_cargados.add(nombre_piso, Filas, columnas, costo_slip, costo_flip, patrones_piso)
+        Pisos_cargados.add(nombre_piso, int(Filas), int(columnas), int(costo_slip), int(costo_flip), patrones_piso)
     print("\nArchivo Cargado Con exito.\n")
         
 
@@ -245,7 +317,16 @@ while respuesta != str(2):
                                     if patron_deseado != patron_deseado_convertir:
                                         patron_a_convertir = piso_disponible.patrones.disponibilidad(patron_deseado_convertir)
                                         if patron_a_convertir is not None:
-                                            patron_disponible.azulejos.movement(patron_a_convertir.azulejos,piso_disponible.filas, piso_disponible.columnas )
+                                            while respuesta != 3:
+                                                print("\nSeleccione una opción:")
+                                                print("1. Mostrar Pasos graficamente")
+                                                print("2. Mostrar Pasos en Consola")
+                                                print("4. Salir")
+                                                respuesta = input("Opción: ")
+                                                if respuesta == str(1):
+                                                    pass
+                                                if respuesta == str(2):
+                                                    patron_disponible.azulejos.movement_str(patron_a_convertir.azulejos, piso_disponible.filas, piso_disponible.columnas)
                                         else:
                                             print("\nPatron no encontrado, intentelo nuevamente.")
                                     else:

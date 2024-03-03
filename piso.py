@@ -11,7 +11,6 @@ class Piso:
 class ListaEnlazada_Pisos:
     def __init__(self):
         self.primero = None
-        self.ultimo = None
 
     def esta_vacia(self):
         return self.primero is None
@@ -20,7 +19,7 @@ class ListaEnlazada_Pisos:
         nuevo_nodo = Piso(nombre,filas, columnas, swap, flip, patrones)
         if self.esta_vacia() or nombre.lower()< self.primero.nombre.lower():
             nuevo_nodo.siguiente = self.primero
-            self.primero = self.ultimo = nuevo_nodo
+            self.primero = nuevo_nodo
         else:
             actual = self.primero
             while actual.siguiente is not None and actual.siguiente.nombre.lower()< nombre.lower():

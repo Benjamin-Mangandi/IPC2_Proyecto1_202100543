@@ -7,7 +7,6 @@ class Patrones:
 class ListaEnlazada_Patrones:
     def __init__(self):
         self.primero = None
-        self.ultimo = None
 
     def esta_vacia(self):
         return self.primero is None
@@ -16,7 +15,7 @@ class ListaEnlazada_Patrones:
         nuevo_nodo = Patrones(codigo, azulejos)
         if self.esta_vacia() or codigo.lower()< self.primero.codigo.lower():
             nuevo_nodo.siguiente = self.primero
-            self.primero = self.ultimo = nuevo_nodo
+            self.primero = nuevo_nodo
         else:
             actual = self.primero
             while actual.siguiente is not None and actual.siguiente.codigo.lower()< codigo.lower():

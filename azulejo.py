@@ -1,4 +1,3 @@
-import copy
 class Azulejo:
     def __init__(self, color):
         self.color = color
@@ -43,12 +42,20 @@ class ListaEnlazada_Azulejos:
                 return
             actual = actual.siguiente
             contador += 1
-        return  # No se encontró la posición
+        return  # Si no se encuentra el indice
+    
+    def copiar(self,ListaOriginal):
+        lista_nueva = ListaEnlazada_Azulejos()
+        azulejo_actual = ListaOriginal.primero
+        while azulejo_actual:
+            lista_nueva.add(azulejo_actual.color)
+            azulejo_actual = azulejo_actual.siguiente
+        return lista_nueva
 
     def movement_str(self, patron_objetivo,filas, columnas, costo_flip, costo_swap):
         if not self.esta_vacia():
             num_paso = 0
-            aux_patron = copy.deepcopy(self)
+            aux_patron = self.copiar(self)
             objetivo_azulejo_actual = patron_objetivo.primero
             azulejo_actual = aux_patron.primero
             print("\nPatron inicial:\n")
@@ -64,7 +71,8 @@ class ListaEnlazada_Azulejos:
                     indice+=1
                 elif azulejo_actual.color != objetivo_azulejo_actual.color:
                     if (indice+1) % (int(columnas)) == 0:
-                            if aux_patron.get(indice+int(columnas)) == objetivo_azulejo_actual.color and patron_objetivo.get(indice+int(columnas)) == azulejo_actual.color:
+                            if aux_patron.get(indice+int(columnas)) == objetivo_azulejo_actual.color \
+                                and patron_objetivo.get(indice+int(columnas)) == azulejo_actual.color:
                                 num_paso+=1
                                 aux_patron.modificar(indice, objetivo_azulejo_actual.color)
                                 aux_patron.modificar(indice+int(columnas), patron_objetivo.get(indice+int(columnas)))
@@ -92,7 +100,8 @@ class ListaEnlazada_Azulejos:
                                 indice+=1
                                 if indice == int(filas)*int(columnas):
                                     return
-                    elif azulejo_actual.siguiente.color == objetivo_azulejo_actual.color and azulejo_actual.color == objetivo_azulejo_actual.siguiente.color:
+                    elif azulejo_actual.siguiente.color == objetivo_azulejo_actual.color \
+                        and azulejo_actual.color == objetivo_azulejo_actual.siguiente.color:
                         num_paso+=1
                         aux_patron.modificar(indice, objetivo_azulejo_actual.color)
                         aux_patron.modificar(indice+1, azulejo_actual.siguiente.color)
@@ -103,7 +112,8 @@ class ListaEnlazada_Azulejos:
                         azulejo_actual= azulejo_actual.siguiente
                         objetivo_azulejo_actual = objetivo_azulejo_actual.siguiente
                         indice+=1
-                    elif aux_patron.get(indice+int(columnas)) == objetivo_azulejo_actual.color and patron_objetivo.get(indice+int(columnas)) == azulejo_actual.color:
+                    elif aux_patron.get(indice+int(columnas)) == objetivo_azulejo_actual.color \
+                        and patron_objetivo.get(indice+int(columnas)) == azulejo_actual.color:
                         num_paso+=1
                         aux_patron.modificar(indice, objetivo_azulejo_actual.color)
                         aux_patron.modificar(indice+int(columnas), patron_objetivo.get(indice+int(columnas)))

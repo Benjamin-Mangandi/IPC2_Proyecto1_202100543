@@ -41,7 +41,7 @@ Pisos_cargados = None
 costo_total = None
 respuesta_usuario = 0
 while respuesta_usuario != str(2):
-    print("1. Cargar archivo XML")
+    print("1. Cargar archivo XML") #MENU INICIAL
     print("2. Salir")
     respuesta_usuario = input("Opción: ")
     if respuesta_usuario == str(1):
@@ -53,8 +53,8 @@ while respuesta_usuario != str(2):
             tree = ET.parse(ruta_xml)
             raiz = tree.getroot()
             save_data(raiz)
-            while respuesta_usuario != str(3):
-                print("\nPor favor seleccione una opción")
+            while respuesta_usuario != str(3): 
+                print("\nPor favor seleccione una opción") #SUB MENU 1
                 print("1. Seleccionar Piso")
                 print("2. Mostrar Todos los pisos")
                 print("3. Salir")
@@ -69,7 +69,7 @@ while respuesta_usuario != str(2):
                         if patron_disponible is not None:
                             print("\n¡Patron Encontrado con exito!")
                             while respuesta_usuario != str(4):
-                                print("\nSeleccione una opción para el patron:")
+                                print("\nSeleccione una opción para el patron:") #SUB MENU 2
                                 print("1. Mostrar graficamente")
                                 print("2. Convertir patron a uno nuevo")
                                 print("4. Salir")

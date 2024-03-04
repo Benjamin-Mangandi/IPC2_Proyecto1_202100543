@@ -20,14 +20,14 @@ def crear_piso(piso_deseado, patron_deseado, codigo_patron):
                 color = 'white'
             elif str(color_azulejo) == "N":
                 color = 'black'
-            piso.node(f'{i}{j}', style='filled', fillcolor=color)
+            piso.node(f'{i+1}{j+1}', style='filled', fillcolor=color)
     
     espaciado = 0.4
     for i in range(int(piso_deseado.filas)):
         for j in range(int(piso_deseado.columnas)):
             pos_x = j * espaciado
             pos_y = -i * espaciado
-            piso.node(f'{i}{j}', pos=f'{pos_x},{pos_y}!')
+            piso.node(f'{i+1}{j+1}', pos=f'{pos_x},{pos_y}!')
     
     piso.view()
 
@@ -52,13 +52,13 @@ def crear_piso_convertido(piso_deseado, patron_deseado, codigo_patron1, codigo_p
                 color = 'white'
             elif str(color_azulejo) == "N":
                 color = 'black'
-            piso.node(f'{i}{j}', style='filled', fillcolor=color)
+            piso.node(f'{i+1}{j+1}', style='filled', fillcolor=color)
     
     espaciado = 0.4
     for i in range(int(piso_deseado.filas)):
         for j in range(int(piso_deseado.columnas)):
             pos_x = j * espaciado
             pos_y = -i * espaciado
-            piso.node(f'{i}{j}', pos=f'{pos_x},{pos_y}!')
+            piso.node(f'{i+1}{j+1}', pos=f'{pos_x},{pos_y}!')
     
     piso.view()

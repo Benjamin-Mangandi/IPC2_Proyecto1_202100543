@@ -27,7 +27,7 @@ class ListaEnlazada_Patrones:
         if not self.esta_vacia():
             patron_actual = self.primero
             while patron_actual is not None:
-                print("codigo patron: "+patron_actual.codigo)
+                print("Codigo Patrón: "+patron_actual.codigo)
                 patron_actual = patron_actual.siguiente
         else:
             print("La lista está vacia")

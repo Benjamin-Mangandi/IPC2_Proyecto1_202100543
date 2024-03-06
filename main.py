@@ -10,7 +10,7 @@ def save_data(raiz):
     global Pisos_cargados
     Pisos_cargados = ListaEnlazada_Pisos()
     for hoja in raiz:  
-        nombre_piso = hoja.get("nombres")
+        nombre_piso = hoja.get("nombre")
         tag_columnas = hoja.find("C")
         columnas = tag_columnas.text.strip()
         tag_Filas = hoja.find("R")
@@ -81,6 +81,7 @@ while respuesta_usuario != str(2):
                                     if codigo_patron_deseado != codigo_patron_deseado_convertir:
                                         patron_a_convertir = piso_disponible.patrones.disponibilidad(codigo_patron_deseado_convertir)
                                         if patron_a_convertir is not None:
+                                            graph.crear_piso(piso_disponible, patron_disponible, codigo_patron_deseado)
                                             patron_disponible.azulejos.movement_str(patron_a_convertir.azulejos, piso_disponible.filas, 
                                                                                     piso_disponible.columnas, piso_disponible.flip, 
                                                                                     piso_disponible.swap)

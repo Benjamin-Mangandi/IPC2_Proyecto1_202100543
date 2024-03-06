@@ -30,8 +30,11 @@ class ListaEnlazada_Pisos:
     def get(self):
         if not self.esta_vacia():
             piso_actual = self.primero
+            contador =0 
             while piso_actual is not None:
-                print("\nNombre: "+piso_actual.nombre)
+                contador+=1
+                print("\nPiso "+str(contador))
+                print("Nombre: "+piso_actual.nombre)
                 piso_actual.patrones.get()
                 piso_actual = piso_actual.siguiente
         else:
